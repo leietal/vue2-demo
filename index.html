@@ -7,65 +7,211 @@
     <title>vue2-demo</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <style>
-        [v-cloak]{
+        [v-cloak] {
             display: none;
         }
-        .block{
-            margin: 10px;
-            border: 1px solid #000;
-            display: flex;
-            align-items: stretch;
-            overflow: hidden;
-        }
-        .block-left{
-            background-color: #4f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .block-right{
-            background-color: #f77;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .block-text,
-        .block-img{
-            /*margin: auto;*/
-            max-width: 100%;
+
+        .panel {
+            margin: 15px auto;
         }
     </style>
 </head>
 
 <body>
     <div id="app" v-cloak>
-        <div class="row block">
-            <div class="col-xs-6 block-left">
-                <div class="block-text">sjlkkkkkkkkk</div>
+        <div class="container-fluid">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <button class="btn btn-success" @click="add">新增</button>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="col-md-1 text-center">序号</th>
+                                <th class="col-md-3 text-left">姓名</th>
+                                <th class="col-md-2 text-center">性别</th>
+                                <th class="col-md-2 text-center">年龄</th>
+                                <th class="col-md-4 text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody v-if="users.length > 0">
+                            <tr v-for="(user,i) in users">
+                                <td class="text-center">#{{i+1}}</td>
+                                <td class="text-left">{{user.name}}</td>
+                                <td class="text-center">{{dict.sex[user.sex]}}</td>
+                                <td class="text-center">{{user.age}}</td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-primary" @click="update(i)">修改</button>
+                                        <button type="button" class="btn btn-danger" @click="remove(i)">删除</button>
+                                        <button type="button" class="btn btn-info" @click="look(i)">查看</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-default">首页</button>
+                                        <button type="button" class="btn btn-default">上一页</button>
+                                        <button type="button" class="btn btn-default" disabled>1/23</button>
+                                        <button type="button" class="btn btn-default">下一页</button>
+                                        <button type="button" class="btn btn-default">末页</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
-            <div class="col-xs-6 block-right"><img class="block-img" src="https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png"></div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">个人信息</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form name="myForm"></form>
+                        <div class="row form-group">
+                            <div class="col-md-2 text-right">
+                                <label>姓名：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <input class="form-control" v-model="user.name" form="myForm">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-2 text-right">
+                                <label>性别：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <label>
+                                    <input type="radio" v-model="user.sex" value="1" form="myForm">&nbsp;男&nbsp;
+                                </label>
+                                <label>
+                                    <input type="radio" v-model="user.sex" value="2" form="myForm">&nbsp;女&nbsp;
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-2 text-right">
+                                <label>年龄：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <input type="number" class="form-control" v-model="user.age" form="myForm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="btnSave" @click="save">保存</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
     <script src="./js/vue.min.js"></script>
     <script src="./js/jquery.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
     <script type="text/javascript">
         new Vue({
-            el: "#app",// 2.0后不可写在body上
+            el: "#app",
             data: {
-                // 页面上用到的变量都需要在这里定义
-                message: 'hello',
-                visible: false
+                users: [{
+                    name: '小明',
+                    sex: '1',
+                    age: 18
+                }, {
+                    name: '小红',
+                    sex: '2',
+                    age: 14
+                }, {
+                    name: '小花',
+                    sex: '2',
+                    age: 18
+                }, {
+                    name: '小软',
+                    sex: '2',
+                    age: 24
+                }, {
+                    name: '小阳',
+                    sex: '1',
+                    age: 25
+                }, {
+                    name: '小强',
+                    sex: '1',
+                    age: 28
+                }, {
+                    name: '小不',
+                    sex: '1',
+                    age: 30
+                }, {
+                    name: '小华',
+                    sex: '1',
+                    age: 17
+                }, {
+                    name: '小米',
+                    sex: '2',
+                    age: 20
+                }, {
+                    name: '小丽',
+                    sex: '2',
+                    age: 18
+                }],
+                user: {
+                    name: null,
+                    sex: null,
+                    age: null
+                },
+                dict: {
+                    sex: {
+                        '1': '男',
+                        '2': '女'
+                    }
+                }
             },
             methods: {
-                // 页面上用到的所有方法都需要在这里定义
-                show: function () {
-                    this.visible = true;
+                add: function (index) {
+                    this.user = {
+                        name: null,
+                        sex: null,
+                        age: null
+                    };
+                    $('#myModal').modal('show');
+                },
+                update: function (index) {
+                    this.user = this.users[index];
+                    $('#myModal').modal('show');
+                },
+                remove: function (index) {
+                    Vue.delete(this.users, index);
+                },
+                look: function (index) {
+                    this.user = this.users[index];
+                    $('#myModal input').attr('disabled', true);
+                    $('#btnSave').attr('disabled', true);
+                    $('#myModal').modal('show');
+                },
+                save: function () {
+                    Vue.set(this.users, this.users.length, this.user);
+
+                    $('#myModal').modal('hide');
                 }
             },
             mounted: function () {
-                // 页面加载完后处理的事件
-                this.show();
+                $('#myModal').on('hide.bs.modal', function (e) {
+                    $('#myModal input').attr('disabled', false);
+                    $('#btnSave').attr('disabled', false);
+                });
             }
         });
     </script>
