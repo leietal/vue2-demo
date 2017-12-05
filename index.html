@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>vue2-demo</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+        .block{
+            margin: 10px;
+            border: 1px solid #000;
+            display: flex;
+            align-items: stretch;
+            overflow: hidden;
+        }
+        .block-left{
+            background-color: #4f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .block-right{
+            background-color: #f77;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .block-text,
+        .block-img{
+            /*margin: auto;*/
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="row block">
+            <div class="col-xs-6 block-left">
+                <div class="block-text">sjlkkkkkkkkk</div>
+            </div>
+            <div class="col-xs-6 block-right"><img class="block-img" src="https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png"></div>
+        </div>
+    </div>
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        new Vue({
+            el: "#app",// 2.0后不可写在body上
+            data: {
+                // 页面上用到的变量都需要在这里定义
+                message: 'hello',
+                visible: false
+            },
+            methods: {
+                // 页面上用到的所有方法都需要在这里定义
+                show: function () {
+                    this.visible = true;
+                }
+            },
+            mounted: function () {
+                // 页面加载完后处理的事件
+                this.show();
+            }
+        });
+    </script>
+</body>
+
+</html>
