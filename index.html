@@ -53,13 +53,7 @@
                         <tfoot>
                             <tr>
                                 <td colspan="5" class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-default">首页</button>
-                                        <button type="button" class="btn btn-default">上一页</button>
-                                        <button type="button" class="btn btn-default" disabled>1/23</button>
-                                        <button type="button" class="btn btn-default">下一页</button>
-                                        <button type="button" class="btn btn-default">末页</button>
-                                    </div>
+                                    <v-page :page="page" @query="query"></v-page>
                                 </td>
                             </tr>
                         </tfoot>
@@ -85,7 +79,7 @@
                                 <label>姓名：</label>
                             </div>
                             <div class="col-md-10">
-                                <input class="form-control" v-model="user.name" form="myForm">
+                                <input class="form-control readOnly" v-model="user.name" form="myForm" :disabled="isLook">
                             </div>
                         </div>
                         <div class="row form-group">
@@ -94,10 +88,10 @@
                             </div>
                             <div class="col-md-10">
                                 <label>
-                                    <input type="radio" v-model="user.sex" value="1" form="myForm">&nbsp;男&nbsp;
+                                    <input type="radio" v-model="user.sex" value="1" form="myForm" :disabled="isLook">&nbsp;男&nbsp;
                                 </label>
                                 <label>
-                                    <input type="radio" v-model="user.sex" value="2" form="myForm">&nbsp;女&nbsp;
+                                    <input type="radio" v-model="user.sex" value="2" form="myForm" :disabled="isLook">&nbsp;女&nbsp;
                                 </label>
                             </div>
                         </div>
@@ -106,13 +100,13 @@
                                 <label>年龄：</label>
                             </div>
                             <div class="col-md-10">
-                                <input type="number" class="form-control" v-model="user.age" form="myForm">
+                                <input type="number" class="form-control" v-model="user.age" form="myForm" :disabled="isLook">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" id="btnSave" @click="save">保存</button>
+                        <button type="button" class="btn btn-primary" id="btnSave" @click="save" :disabled="isLook">保存</button>
                     </div>
                 </div>
             </div>
@@ -122,52 +116,64 @@
     <script src="./js/vue.min.js"></script>
     <script src="./js/jquery.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/component.js"></script>
     <script type="text/javascript">
         new Vue({
             el: "#app",
             data: {
                 users: [{
+                    id: 1,
                     name: '小明',
                     sex: '1',
                     age: 18
                 }, {
+                    id: 2,
                     name: '小红',
                     sex: '2',
                     age: 14
                 }, {
+                    id: 3,
                     name: '小花',
                     sex: '2',
                     age: 18
                 }, {
+                    id: 4,
                     name: '小软',
                     sex: '2',
                     age: 24
                 }, {
+                    id: 5,
                     name: '小阳',
                     sex: '1',
                     age: 25
                 }, {
+                    id: 6,
                     name: '小强',
                     sex: '1',
                     age: 28
                 }, {
+                    id: 7,
                     name: '小不',
                     sex: '1',
                     age: 30
                 }, {
+                    id: 8,
                     name: '小华',
                     sex: '1',
                     age: 17
                 }, {
+                    id: 9,
                     name: '小米',
                     sex: '2',
                     age: 20
                 }, {
+                    id: 10,
                     name: '小丽',
                     sex: '2',
                     age: 18
                 }],
                 user: {
+                    id: null,
                     name: null,
                     sex: null,
                     age: null
@@ -177,40 +183,54 @@
                         '1': '男',
                         '2': '女'
                     }
-                }
+                },
+                page: {
+                    pageNo: 1,
+                    pageCount: 12
+                },
+                isLook: false,// 是否查看（查看则禁用按钮和表单）
+                current: -1// 记录当前操作的是哪一条记录
             },
             methods: {
                 add: function (index) {
                     this.user = {
+                        id: null,
                         name: null,
                         sex: null,
                         age: null
                     };
+                    this.current = -1;
                     $('#myModal').modal('show');
                 },
                 update: function (index) {
-                    this.user = this.users[index];
+                    this.current = index;
+                    this.user = JSON.parse(JSON.stringify(this.users[index]));
                     $('#myModal').modal('show');
                 },
                 remove: function (index) {
                     Vue.delete(this.users, index);
                 },
                 look: function (index) {
-                    this.user = this.users[index];
-                    $('#myModal input').attr('disabled', true);
-                    $('#btnSave').attr('disabled', true);
+                    this.current = index;
+                    this.user = JSON.parse(JSON.stringify(this.users[index]));
+                    this.isLook = true;
                     $('#myModal').modal('show');
                 },
                 save: function () {
-                    Vue.set(this.users, this.users.length, this.user);
-
+                    if(this.current == -1){
+                        this.current = this.users.length;
+                    }
+                    Vue.set(this.users, this.current, this.user);
                     $('#myModal').modal('hide');
+                },
+                query: function(){
+                    console.log(this.page.pageNo);
                 }
             },
             mounted: function () {
+                var that = this;
                 $('#myModal').on('hide.bs.modal', function (e) {
-                    $('#myModal input').attr('disabled', false);
-                    $('#btnSave').attr('disabled', false);
+                    that.isLook = false;
                 });
             }
         });
