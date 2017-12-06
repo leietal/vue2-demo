@@ -14,3 +14,7 @@ new Vue({
     }
 });
 ```
+
+vue官网教程：https://cn.vuejs.org/v2/guide/
+
+bootstrap教程：http://v3.bootcss.com/
