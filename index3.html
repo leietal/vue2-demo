@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        .panel {
+            margin: 15px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="container-fluid">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <button class="btn btn-success" @click="query">新增</button>
+                </div>
+                <div class="panel-body">
+                    <v-page :page="page" @query="query"></v-page>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/component.js"></script>
+    <script type="text/javascript">
+        new Vue({
+            el: "#app",
+            data: {
+                page: {
+                    pageNo: 2,
+                    pageCount: 10
+                }
+            },
+            methods: {
+                query: function () {
+                    console.log(this.page.pageNo);
+                }
+            },
+            mounted: function () {
+            }
+        });
+    </script>
+</body>
+
+</html>
